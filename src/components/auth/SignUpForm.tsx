@@ -115,7 +115,7 @@ const SignUpForm: React.FC = () => {
       </CardContent>
 
       <CardFooter className="pt-2 flex justify-center">
-        <div className="">
+        <p className="text-sm text-slate-600">
           Already have an account ?
           <Link
             to="/signin"
@@ -123,7 +123,7 @@ const SignUpForm: React.FC = () => {
           >
             Sign In
           </Link>
-        </div>
+        </p>
       </CardFooter>
     </Card>
   );
