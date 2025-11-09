@@ -1,12 +1,15 @@
 import type React from "react";
 import AuthLayout from "../components/auth/AuthLayout";
+import SignUpForm from "../components/auth/SignUpForm";
 
 const SignUpPage: React.FC = () => {
   return (
     <AuthLayout
       title="Get Started"
       subtitle="Create your account to get started"
-    ></AuthLayout>
+    >
+      <SignUpForm />
+    </AuthLayout>
   );
 };
 
