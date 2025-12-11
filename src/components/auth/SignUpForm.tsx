@@ -12,6 +12,22 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
+import { z } from "zod";
+
+// zod schema
+const signInSchema = z
+  .object({
+    fullName: z.string().min(4, "Name is too short"),
+    email: z.email("Please enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password == data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type SignUpSchemaType = z.infer<typeof signInSchema>;
 
 const SignUpForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

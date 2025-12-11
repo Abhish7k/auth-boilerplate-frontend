@@ -13,6 +13,15 @@ import { Button } from "../ui/button";
 import { LoaderCircle } from "lucide-react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { z } from "zod";
+
+// zod schema
+const signInSchema = z.object({
+  email: z.email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+type SignInSchemaType = z.infer<typeof signInSchema>;
 
 const SignInForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
