@@ -16,6 +16,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "../ui/password-input";
+import { toast } from "sonner";
 
 // zod schema
 const signUpSchema = z
@@ -57,11 +58,25 @@ const SignUpForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       console.log("Form submitted:", formData);
+
+      toast.success("Registered successfully", {
+        style: {
+          backgroundColor: "#e7f9ed",
+          color: "#0f7a28",
+        },
+      });
     } catch (error) {
       console.error("Signup error:", error);
+
+      toast.error("Register failed. Please try again.", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
     } finally {
       setIsLoading(false);
     }
