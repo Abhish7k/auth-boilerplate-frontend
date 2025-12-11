@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -13,34 +13,52 @@ import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 // zod schema
-const signInSchema = z
+const signUpSchema = z
   .object({
-    fullName: z.string().min(4, "Name is too short"),
+    fullName: z
+      .string()
+      .min(1, "Please enter your full name")
+      .min(4, "Name is too short")
+      .max(40, "Name is too long"),
+
     email: z.email("Please enter a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
+
+    password: z
+      .string()
+      .min(1, "Please enter password")
+      .min(8, "Password must be at least 8 characters"),
+
+    confirmPassword: z.string().min(1, "Please confirm password"),
   })
   .refine((data) => data.password == data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
-type SignUpSchemaType = z.infer<typeof signInSchema>;
+type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
 const SignUpForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpSchemaType>({
+    resolver: zodResolver(signUpSchema),
+  });
 
+  const onSubmit = async (formData: SignUpSchemaType) => {
     setIsLoading(true);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log("Form submitted:");
+      console.log("Form submitted:", formData);
     } catch (error) {
       console.error("Signup error:", error);
     } finally {
@@ -59,7 +77,7 @@ const SignUpForm: React.FC = () => {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* name */}
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
@@ -69,7 +87,12 @@ const SignUpForm: React.FC = () => {
               type="text"
               placeholder="Name"
               className="w-full"
+              {...register("fullName")}
             />
+
+            {errors.fullName && (
+              <p className="text-sm text-red-500">{errors.fullName.message}</p>
+            )}
           </div>
 
           {/* email */}
@@ -81,7 +104,12 @@ const SignUpForm: React.FC = () => {
               type="email"
               placeholder="name@example.com"
               className="w-full"
+              {...register("email")}
             />
+
+            {errors.email && (
+              <p className="text-sm text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           {/* password */}
@@ -93,11 +121,12 @@ const SignUpForm: React.FC = () => {
               type="password"
               placeholder="*******"
               className="w-full"
+              {...register("password")}
             />
 
-            <p className="text-xs text-slate-500 pl-1">
-              must be at least 8 characters
-            </p>
+            {errors.password && (
+              <p className="text-sm text-red-500">{errors.password.message}</p>
+            )}
           </div>
 
           {/* confirm password */}
@@ -109,7 +138,14 @@ const SignUpForm: React.FC = () => {
               type="password"
               placeholder="*******"
               className="w-full"
+              {...register("confirmPassword")}
             />
+
+            {errors.confirmPassword && (
+              <p className="text-sm text-red-500">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
 
           <Button

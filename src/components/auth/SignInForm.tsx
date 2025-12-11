@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,11 +14,16 @@ import { LoaderCircle } from "lucide-react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 // zod schema
 const signInSchema = z.object({
   email: z.email("Please enter a valid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z
+    .string()
+    .min(1, "Please enter your email")
+    .min(8, "Password must be at least 8 characters"),
 });
 
 type SignInSchemaType = z.infer<typeof signInSchema>;
@@ -26,15 +31,21 @@ type SignInSchemaType = z.infer<typeof signInSchema>;
 const SignInForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInSchemaType>({
+    resolver: zodResolver(signInSchema),
+  });
 
+  const onSubmit = async (formData: SignInSchemaType) => {
     setIsLoading(true);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log("logged in");
+      console.log("logged in", formData);
     } catch (error) {
       console.log("Sign in error: ", error);
     } finally {
@@ -53,7 +64,7 @@ const SignInForm: React.FC = () => {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* email */}
           <div className="space-y-2">
             <Label htmlFor="email" className="">
@@ -65,7 +76,12 @@ const SignInForm: React.FC = () => {
               type="email"
               placeholder="name@example.com"
               className="w-full"
+              {...register("email")}
             />
+
+            {errors.email && (
+              <p className="text-sm text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           {/* password */}
@@ -77,7 +93,12 @@ const SignInForm: React.FC = () => {
               type="password"
               placeholder="********"
               className="w-full"
+              {...register("password")}
             />
+
+            {errors.password && (
+              <p className="text-sm text-red-500">{errors.password.message}</p>
+            )}
           </div>
 
           {/* submit button */}
