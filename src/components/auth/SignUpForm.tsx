@@ -15,6 +15,7 @@ import { LoaderCircle } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import PasswordInput from "../ui/password-input";
 
 // zod schema
 const signUpSchema = z
@@ -116,9 +117,8 @@ const SignUpForm: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
 
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="*******"
               className="w-full"
               {...register("password")}
@@ -133,9 +133,8 @@ const SignUpForm: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
 
-            <Input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               placeholder="*******"
               className="w-full"
               {...register("confirmPassword")}

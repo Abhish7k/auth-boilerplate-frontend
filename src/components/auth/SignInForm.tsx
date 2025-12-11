@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import PasswordInput from "../ui/password-input";
 
 // zod schema
 const signInSchema = z.object({
@@ -88,10 +89,8 @@ const SignInForm: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
 
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
-              placeholder="********"
               className="w-full"
               {...register("password")}
             />
@@ -130,28 +129,28 @@ const SignInForm: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* social logins */}
-          <div className="grid grid-cols-2 gap-5">
-            <Button
-              className="cursor-pointer"
-              variant="outline"
-              disabled={isLoading}
-            >
-              <FaGoogle />
-              Google
-            </Button>
-
-            <Button
-              className="cursor-pointer"
-              variant="outline"
-              disabled={isLoading}
-            >
-              <FaGithub />
-              Github
-            </Button>
-          </div>
         </form>
+
+        {/* social logins */}
+        <div className="grid grid-cols-2 gap-5">
+          <Button
+            className="cursor-pointer"
+            variant="outline"
+            disabled={isLoading}
+          >
+            <FaGoogle />
+            Google
+          </Button>
+
+          <Button
+            className="cursor-pointer"
+            variant="outline"
+            disabled={isLoading}
+          >
+            <FaGithub />
+            Github
+          </Button>
+        </div>
       </CardContent>
 
       <CardFooter className="pt-2 flex justify-center">
