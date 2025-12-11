@@ -10,13 +10,14 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "../ui/password-input";
 import { toast } from "sonner";
+import { registerRequest } from "../../lib/auth";
 
 // zod schema
 const signUpSchema = z
@@ -54,20 +55,30 @@ const SignUpForm: React.FC = () => {
     resolver: zodResolver(signUpSchema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (formData: SignUpSchemaType) => {
     setIsLoading(true);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
+      await registerRequest(
+        formData.fullName,
+        formData.email,
+        formData.password
+      );
+
       console.log("Form submitted:", formData);
 
-      toast.success("Registered successfully", {
+      toast.success("Registered successfully, please sign in", {
         style: {
           backgroundColor: "#e7f9ed",
           color: "#0f7a28",
         },
       });
+
+      navigate("/signin");
     } catch (error) {
       console.error("Signup error:", error);
 

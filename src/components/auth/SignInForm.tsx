@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "../ui/password-input";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
 
 // zod schema
 const signInSchema = z.object({
@@ -33,6 +34,8 @@ type SignInSchemaType = z.infer<typeof signInSchema>;
 const SignInForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { login } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -47,7 +50,7 @@ const SignInForm: React.FC = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      console.log("logged in", formData);
+      await login(formData.email, formData.password);
 
       toast.success("Logged in successfully", {
         style: {
@@ -55,6 +58,8 @@ const SignInForm: React.FC = () => {
           color: "#0f7a28",
         },
       });
+
+      console.log(formData);
     } catch (error) {
       console.log("Sign in error: ", error);
 
